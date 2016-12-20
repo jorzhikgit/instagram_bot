@@ -13,7 +13,7 @@ config.set({
 const thread = spawn("run");
 
 thread
-	.send({taskId: ''})
+	.send({taskId: 'task1'})
 	.on('message', function (response)
 	{
 		thread.kill();
