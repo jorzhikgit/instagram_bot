@@ -27,43 +27,51 @@ class InstagramBot {
 	{
 		return new promoise((resolve, reject) =>
 		{
-			this._getTask().then(() =>
-			{
-				this._startBrowser();
-				logger.info(this.taskId + ': start boting');
-				logger.info(this.taskId + ': start like and subscribe');
-				this._doLikeAndSubscribeBoting().then(() =>
-				{
-					this._stopBrowser()
-					this.save().then(() =>
-					{
-						logger.info(this.taskId + ': save boting');
-						logger.info(this.taskId + ': stop boting');
-						resolve();
-					}).catch(() =>
-					{
-						logger.info(this.taskId + ': save task error');
-						reject();
-					})
-				}).catch(() =>
-				{
-					this._stopBrowser()
-					this.save().then(() =>
-					{
-						logger.info(this.taskId + ': boting error');
-						logger.info(this.taskId + ': save boting');
-						reject();
-					}).catch(() =>
-					{
-						logger.info(this.taskId + ': save task error');
-						reject();
-					})
-				})
-			}).catch(() =>
-			{
-				logger.info(this.taskId + ': task read error');
-				reject();
-			})
+			this._getTask()
+			    .then(() =>
+			    {
+				    this._startBrowser();
+				    logger.info(this.taskId + ': start boting');
+				    logger.info(this.taskId + ': start like and subscribe');
+				    this._doLikeAndSubscribeBoting()
+				        .then(() =>
+				        {
+					        this._stopBrowser()
+					        this.save()
+					            .then(() =>
+					            {
+						            logger.info(this.taskId + ': save boting');
+						            logger.info(this.taskId + ': stop boting');
+						            resolve();
+					            })
+					            .catch((err) =>
+					            {
+						            logger.info(this.taskId + ': save task error');
+						            reject();
+					            })
+				        })
+				        .catch((err) =>
+				        {
+					        this._stopBrowser()
+					        this.save()
+					            .then(() =>
+					            {
+						            logger.info(this.taskId + ': boting error');
+						            logger.info(this.taskId + ': save boting');
+						            reject();
+					            })
+					            .catch((err) =>
+					            {
+						            logger.info(this.taskId + ': save task error');
+						            reject();
+					            })
+				        })
+			    })
+			    .catch((err) =>
+			    {
+				    logger.info(this.taskId + ': task read error');
+				    reject();
+			    })
 		})
 	}
 
@@ -71,43 +79,51 @@ class InstagramBot {
 	{
 		return new promoise((resolve, reject) =>
 		{
-			this._getTask().then(() =>
-			{
-				this._startBrowser();
-				logger.info(this.taskId + ': start boting');
-				logger.info(this.taskId + ': start unsubscribe');
-				this._doUnsubscribeBoting().then(() =>
-				{
-					this._stopBrowser()
-					this.save().then(() =>
-					{
-						logger.info(this.taskId + ': save boting');
-						logger.info(this.taskId + ': stop boting');
-						resolve();
-					}).catch(() =>
-					{
-						logger.info(this.taskId + ': save task error');
-						reject();
-					})
-				}).catch(() =>
-				{
-					this._stopBrowser()
-					this.save().then(() =>
-					{
-						logger.info(this.taskId + ': boting error');
-						logger.info(this.taskId + ': save boting');
-						reject();
-					}).catch(() =>
-					{
-						logger.info(this.taskId + ': save task error');
-						reject();
-					})
-				})
-			}).catch(() =>
-			{
-				logger.info(this.taskId + ': task read error');
-				reject();
-			})
+			this._getTask()
+			    .then(() =>
+			    {
+				    this._startBrowser();
+				    logger.info(this.taskId + ': start boting');
+				    logger.info(this.taskId + ': start unsubscribe');
+				    this._doUnsubscribeBoting()
+				        .then(() =>
+				        {
+					        this._stopBrowser()
+					        this.save()
+					            .then(() =>
+					            {
+						            logger.info(this.taskId + ': save boting');
+						            logger.info(this.taskId + ': stop boting');
+						            resolve();
+					            })
+					            .catch((err) =>
+					            {
+						            logger.info(this.taskId + ': save task error');
+						            reject();
+					            })
+				        })
+				        .catch((err) =>
+				        {
+					        this._stopBrowser()
+					        this.save()
+					            .then(() =>
+					            {
+						            logger.info(this.taskId + ': boting error');
+						            logger.info(this.taskId + ': save boting');
+						            reject();
+					            })
+					            .catch(() =>
+					            {
+						            logger.info(this.taskId + ': save task error');
+						            reject();
+					            })
+				        })
+			    })
+			    .catch((err) =>
+			    {
+				    logger.info(this.taskId + ': task read error');
+				    reject();
+			    })
 		})
 	}
 
@@ -138,19 +154,17 @@ class InstagramBot {
 			if (this._task.users_for_unsubscribe.length)
 			{
 				this._auth()
-					.then(() => this._openUser(this._task.users_for_unsubscribe[0])
-									.then(() => this._unSubscribe()
-													.then(() => {
-														this._task.users_for_unsubscribe.splice(0, 1)
-														this.save()
-															.then(() => this._doUnsubscribeBoting()
-																				   .then(() => resolve())
-																				   .catch(err => reject(err)))
-															.catch(err => reject(err))
-													})
-													.catch(err => reject(err)))
-									.catch(err => reject(err)))
-					.catch(err => reject(err))
+				    .then(() => this._openUser(this._task.users_for_unsubscribe[0]))
+				    .then(() => this._unSubscribe())
+				    .then(() =>
+				    {
+					    this._task.users_for_unsubscribe.splice(0, 1)
+					    this.save()
+					        .then(() => this._doUnsubscribeBoting())
+					        .then(() => resolve())
+					        .catch(err => reject(err))
+				    })
+				    .catch(err => reject(err))
 			}
 			else
 			{
@@ -166,23 +180,19 @@ class InstagramBot {
 			if (this._task.users_for_like.length)
 			{
 				this._auth()
-					.then(() => this._openUser(this._task.users_for_like[0])
-									.then(() => this._subscribe(this._task.users_for_like[0])
-													.then(() => this._findFirstFoto()
-																	.then(() => this._like()
-																					.then(() =>
-																					{
-																						this._task.users_for_like.splice(0, 1)
-																						this.save()
-																							.then(() => this._doLikeAndSubscribeBoting()
-																											.then(() => resolve())
-																											.catch(err => reject(err)))
-																							.catch(err => reject(err))
-																					}).catch(err => reject(err)))
-																	.catch(err => reject(err)))
-													.catch(err => reject(err)))
-									.catch(err => reject(err)))
-					.catch(err => reject(err))
+				    .then(() => this._openUser(this._task.users_for_like[0]))
+				    .then(() => this._subscribe(this._task.users_for_like[0]))
+				    .then(() => this._findFirstFoto())
+				    .then(() => this._like())
+				    .then(() =>
+				    {
+					    this._task.users_for_like.splice(0, 1)
+					    this.save()
+					        .then(() => this._doLikeAndSubscribeBoting())
+					        .then(() => resolve())
+					        .catch(err => reject(err))
+				    })
+				    .catch(err => reject(err))
 			}
 			else
 			{
@@ -266,7 +276,8 @@ class InstagramBot {
 					if (text == subscribeButtonText)
 					{
 						logger.info(this.taskId + ': do subscribe');
-						this._browser.findElement(by.xpath(xpathSubscribeButton)).click().then(() => {
+						this._browser.findElement(by.xpath(xpathSubscribeButton)).click().then(() =>
+						{
 							this._task.users_for_unsubscribe.push(accountId)
 							this.save().then(() => resolve()).catch(err => reject(err))
 						}).catch(err => reject(err));
@@ -294,7 +305,8 @@ class InstagramBot {
 					if (text == unsubscribeButtonText)
 					{
 						logger.info(this.taskId + ': do unsubscribe');
-						this._browser.findElement(by.xpath(xpathSubscribeButton)).click().then(() => {
+						this._browser.findElement(by.xpath(xpathSubscribeButton)).click().then(() =>
+						{
 							resolve()
 						}).catch(err => reject(err));
 					}
