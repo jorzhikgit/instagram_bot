@@ -1,10 +1,10 @@
-'use strict'
+"use strict"
 
-const config = require('./../helpers/config')
-const logger = require('./../helpers/logger')
-const fs = require('fs')
-const webdriver = require('selenium-webdriver')
-const promoise = require('bluebird')
+const config = require("./../helpers/config")
+const logger = require("./../helpers/logger")
+const fs = require("fs")
+const webdriver = require("selenium-webdriver")
+const promoise = require("bluebird")
 const by = webdriver.By
 const delay = config.get("delay")
 const xpathFirstPhoto = config.get("xpath_first_photo")
@@ -19,6 +19,11 @@ const unsubscribeButtonText = config.get("unsubscribe_button_text")
 class InstagramBot {
 	constructor (taskId)
 	{
+		this.setTaskId(taskId)
+	}
+
+	setTaskId (taskId = "default")
+	{
 		this.taskId = taskId
 		this._taskPath = config.get("data_dir") + this.taskId + ".json"
 	}
@@ -31,8 +36,8 @@ class InstagramBot {
 			    .then(() =>
 			    {
 				    this._startBrowser();
-				    logger.info(this.taskId + ': start boting');
-				    logger.info(this.taskId + ': start like and subscribe');
+				    logger.info(this.taskId + ": start boting");
+				    logger.info(this.taskId + ": start like and subscribe");
 				    this._doLikeAndSubscribeBoting()
 				        .then(() =>
 				        {
@@ -40,13 +45,13 @@ class InstagramBot {
 					        this.save()
 					            .then(() =>
 					            {
-						            logger.info(this.taskId + ': save boting');
-						            logger.info(this.taskId + ': stop boting');
+						            logger.info(this.taskId + ": save boting");
+						            logger.info(this.taskId + ": stop boting");
 						            resolve();
 					            })
 					            .catch((err) =>
 					            {
-						            logger.info(this.taskId + ': save task error');
+						            logger.info(this.taskId + ": save task error");
 						            reject();
 					            })
 				        })
@@ -56,20 +61,20 @@ class InstagramBot {
 					        this.save()
 					            .then(() =>
 					            {
-						            logger.info(this.taskId + ': boting error');
-						            logger.info(this.taskId + ': save boting');
+						            logger.info(this.taskId + ": boting error");
+						            logger.info(this.taskId + ": save boting");
 						            reject();
 					            })
 					            .catch((err) =>
 					            {
-						            logger.info(this.taskId + ': save task error');
+						            logger.info(this.taskId + ": save task error");
 						            reject();
 					            })
 				        })
 			    })
 			    .catch((err) =>
 			    {
-				    logger.info(this.taskId + ': task read error');
+				    logger.info(this.taskId + ": task read error");
 				    reject();
 			    })
 		})
@@ -83,8 +88,8 @@ class InstagramBot {
 			    .then(() =>
 			    {
 				    this._startBrowser();
-				    logger.info(this.taskId + ': start boting');
-				    logger.info(this.taskId + ': start unsubscribe');
+				    logger.info(this.taskId + ": start boting");
+				    logger.info(this.taskId + ": start unsubscribe");
 				    this._doUnsubscribeBoting()
 				        .then(() =>
 				        {
@@ -92,13 +97,13 @@ class InstagramBot {
 					        this.save()
 					            .then(() =>
 					            {
-						            logger.info(this.taskId + ': save boting');
-						            logger.info(this.taskId + ': stop boting');
+						            logger.info(this.taskId + ": save boting");
+						            logger.info(this.taskId + ": stop boting");
 						            resolve();
 					            })
 					            .catch((err) =>
 					            {
-						            logger.info(this.taskId + ': save task error');
+						            logger.info(this.taskId + ": save task error");
 						            reject();
 					            })
 				        })
@@ -108,20 +113,20 @@ class InstagramBot {
 					        this.save()
 					            .then(() =>
 					            {
-						            logger.info(this.taskId + ': boting error');
-						            logger.info(this.taskId + ': save boting');
+						            logger.info(this.taskId + ": boting error");
+						            logger.info(this.taskId + ": save boting");
 						            reject();
 					            })
 					            .catch(() =>
 					            {
-						            logger.info(this.taskId + ': save task error');
+						            logger.info(this.taskId + ": save task error");
 						            reject();
 					            })
 				        })
 			    })
 			    .catch((err) =>
 			    {
-				    logger.info(this.taskId + ': task read error');
+				    logger.info(this.taskId + ": task read error");
 				    reject();
 			    })
 		})
@@ -131,7 +136,7 @@ class InstagramBot {
 	{
 		return new promoise((resolve, reject) =>
 		{
-			logger.info(this.taskId + ': task read');
+			logger.info(this.taskId + ": task read");
 			fs.readFile(this._taskPath, (err, data) =>
 			{
 				if (err)
@@ -240,12 +245,12 @@ class InstagramBot {
 		return new promoise((resolve, reject) =>
 		{
 			this._browser.manage().window().setSize(1024, 700);
-			this._browser.get('https://www.instagram.com/accounts/login/');
+			this._browser.get("https://www.instagram.com/accounts/login/");
 			this._sleep().then(() =>
 			{
-				this._browser.findElement(by.name('username')).sendKeys(this._task.instagram_account_user_id);
-				this._browser.findElement(by.name('password')).sendKeys(this._task.instagram_account_password);
-				this._browser.findElement(by.xpath('//button')).click();
+				this._browser.findElement(by.name("username")).sendKeys(this._task.instagram_account_user_id);
+				this._browser.findElement(by.name("password")).sendKeys(this._task.instagram_account_password);
+				this._browser.findElement(by.xpath("//button")).click();
 				this._sleep().then(() => resolve()).catch(err => reject(err));
 			}).catch(err => reject(err));
 		})
@@ -257,8 +262,8 @@ class InstagramBot {
 		{
 			this._sleep().then(() =>
 			{
-				logger.info(this.taskId + ': open user - ' + accountId);
-				this._browser.get('https://instagram.com/' + accountId);
+				logger.info(this.taskId + ": open user - " + accountId);
+				this._browser.get("https://instagram.com/" + accountId);
 				this._sleep().then(() => resolve()).catch(err => reject(err));
 			}).catch(err => reject(err));
 		})
@@ -270,12 +275,12 @@ class InstagramBot {
 		{
 			this._sleep().then(() =>
 			{
-				logger.info(this.taskId + ': find subscribe button');
+				logger.info(this.taskId + ": find subscribe button");
 				this._browser.findElement(by.xpath(xpathSubscribeButton)).getText().then((text) =>
 				{
 					if (text == subscribeButtonText)
 					{
-						logger.info(this.taskId + ': do subscribe');
+						logger.info(this.taskId + ": do subscribe");
 						this._browser.findElement(by.xpath(xpathSubscribeButton)).click().then(() =>
 						{
 							this._task.users_for_unsubscribe.push(accountId)
@@ -284,7 +289,7 @@ class InstagramBot {
 					}
 					else
 					{
-						logger.info(this.taskId + ': already subscribed');
+						logger.info(this.taskId + ": already subscribed");
 						resolve()
 					}
 				}).catch(err => reject(err))
@@ -298,13 +303,13 @@ class InstagramBot {
 		{
 			this._sleep().then(() =>
 			{
-				logger.info(this.taskId + ': find unsubscribe button');
+				logger.info(this.taskId + ": find unsubscribe button");
 				this._browser.findElement(by.xpath(xpathSubscribeButton)).getText().then((text) =>
 				{
 					console.log(text)
 					if (text == unsubscribeButtonText)
 					{
-						logger.info(this.taskId + ': do unsubscribe');
+						logger.info(this.taskId + ": do unsubscribe");
 						this._browser.findElement(by.xpath(xpathSubscribeButton)).click().then(() =>
 						{
 							resolve()
@@ -312,7 +317,7 @@ class InstagramBot {
 					}
 					else
 					{
-						logger.info(this.taskId + ': already unsubscribed');
+						logger.info(this.taskId + ": already unsubscribed");
 						resolve()
 					}
 				}).catch(err => reject(err))
@@ -326,7 +331,7 @@ class InstagramBot {
 		{
 			this._sleep().then(() =>
 			{
-				logger.info(this.taskId + ': find first foto');
+				logger.info(this.taskId + ": find first foto");
 				this._browser.findElement(by.xpath(xpathFirstPhoto)).click().then(() => resolve()).catch(err => reject(err));
 			}).catch(err => reject(err));
 		})
@@ -338,17 +343,17 @@ class InstagramBot {
 		{
 			this._sleep().then(() =>
 			{
-				logger.info(this.taskId + ': find like class');
-				this._browser.findElement(by.xpath(xpathLikeClass)).getAttribute('class').then((className) =>
+				logger.info(this.taskId + ": find like class");
+				this._browser.findElement(by.xpath(xpathLikeClass)).getAttribute("class").then((className) =>
 				{
 					if (className.indexOf(likedClass) === -1)
 					{
-						logger.info(this.taskId + ': do like');
+						logger.info(this.taskId + ": do like");
 						this._browser.findElement(by.xpath(xpathLikeButton)).click().then(() => resolve()).catch(err => reject(err));
 					}
 					else
 					{
-						logger.info(this.taskId + ': already liked');
+						logger.info(this.taskId + ": already liked");
 						resolve()
 					}
 				}).catch(err => reject(err));

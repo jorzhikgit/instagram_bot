@@ -1,28 +1,41 @@
-'use strict'
+"use strict"
 
-const threads = require('threads');
-const config = threads.config;
-const spawn = threads.spawn;
+const logger = require("./helpers/logger")
+const threads = require("threads")
+const config = threads.config
+const pool = threads.Pool
+const workersPool = new pool()
 
 config.set({
 	basepath: {
-		node: __dirname + '/bot'
+		node: __dirname
 	}
-});
+})
 
-const thread = spawn("run");
-
-thread
-	.send({taskId: 'task1'})
-	.on('message', function (response)
+workersPool
+	.on("finished", () =>
 	{
-		thread.kill();
-	})
-	.on('error', function (error)
-	{
-		console.error('Worker errored:', error);
-	})
-	.on('exit', function ()
-	{
-		console.log('Worker has been terminated.');
+		logger.info("all bots done");
+		workersPool.killAll();
 	});
+
+module.exports.createBot = function (command = "unsubscribe", task_id = "default")
+{
+	let worker = workersPool
+		.run('./bot/runner')
+		.send({
+			command: command,
+			task_id: task_id
+		})
+	worker
+		.on('error', () =>
+		{
+			logger.info("bot error: task_id: " + task_id + " command: " + command);
+		})
+		.on("done", () =>
+		{
+			logger.info("bot done: task_id: " + task_id + " command: " + command);
+		})
+}
+
+module.exports.killAll = () => workersPool.killAll()
