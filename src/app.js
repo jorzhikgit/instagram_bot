@@ -30,11 +30,11 @@ module.exports.createBot = function (command = "unsubscribe", task_id = "default
 	worker
 		.on('error', () =>
 		{
-			logger.info("bot error: task_id: " + task_id + " command: " + command);
+			logger.info("bot error - task_id: " + task_id + " command: " + command);
 		})
 		.on("done", () =>
 		{
-			logger.info("bot done: task_id: " + task_id + " command: " + command);
+			logger.info("bot done - task_id: " + task_id + " command: " + command);
 		})
 }
 
